@@ -7,5 +7,3 @@ This mod requires [TerraFirmaCraft for 1.18+](https://www.curseforge.com/minecra
 This mod is under the MIT License. This means that you can include it in your modpack without asking my permission.
 
 TFC, which this mod is an addon for, is under the EUPL license. When using portions of this mod, be aware that the TFC license may apply.
-
-Curios, which this mod depends on, is under the LGPL. You can view that license on that mod page.
