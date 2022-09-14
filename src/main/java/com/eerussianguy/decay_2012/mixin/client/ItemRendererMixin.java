@@ -55,12 +55,17 @@ public abstract class ItemRendererMixin
             final Tesselator tesselator = Tesselator.getInstance();
             final BufferBuilder buffer = tesselator.getBuilder();
 
-            final int color = Decay2012.getDecayBarColor(food);
-            this.invoke$fillRect(buffer, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
-            this.invoke$fillRect(buffer, x + 2, y + 13, Decay2012.getDecayBarWidth(food), 1, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
-
-            this.invoke$fillRect(buffer, x + 2, y + 15, 13, 2, 0, 0, 0, 255);
-            this.invoke$fillRect(buffer, x + 2, y + 15, Decay2012.getWeightBarWidth(stack), 1, 255, 255, 255, 255);
+            if (DecayConfig.CLIENT.enableFoodDecayRender.get())
+            {
+                final int color = Decay2012.getDecayBarColor(food);
+                this.invoke$fillRect(buffer, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
+                this.invoke$fillRect(buffer, x + 2, y + 13, Decay2012.getDecayBarWidth(food), 1, color >> 16 & 255, color >> 8 & 255, color & 255, 255);
+            }
+            if (DecayConfig.CLIENT.enableFoodWeightRender.get())
+            {
+                this.invoke$fillRect(buffer, x + 2, y + 15, 13, 2, 0, 0, 0, 255);
+                this.invoke$fillRect(buffer, x + 2, y + 15, Decay2012.getWeightBarWidth(stack), 1, 255, 255, 255, 255);
+            }
 
             RenderSystem.enableBlend();
             RenderSystem.enableTexture();

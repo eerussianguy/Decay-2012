@@ -9,6 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import com.eerussianguy.decay_2012.Decay2012;
+import com.eerussianguy.decay_2012.DecayConfig;
 import net.dries007.tfc.common.TFCTags;
 import net.dries007.tfc.common.capabilities.food.FoodCapability;
 import net.dries007.tfc.util.Helpers;
@@ -24,7 +25,7 @@ public class ItemMixin
     private void inject$overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access, CallbackInfoReturnable<Boolean> cir)
     {
         Decay2012.ifFood(stack, food -> {
-            if (action == ClickAction.SECONDARY && slot.allowModification(player) && Helpers.isItem(other, TFCTags.Items.KNIVES))
+            if (action == ClickAction.SECONDARY && slot.allowModification(player) && Helpers.isItem(other, TFCTags.Items.KNIVES) && DecayConfig.CLIENT.enableCuttingDecay.get())
             {
                 final boolean isClient = player.level.isClientSide;
                 final float pct = Decay2012.getPercentDecayed(food, isClient);

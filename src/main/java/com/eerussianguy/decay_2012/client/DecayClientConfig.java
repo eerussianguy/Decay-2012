@@ -11,6 +11,9 @@ public class DecayClientConfig
     public final ForgeConfigSpec.BooleanValue enableTFCDecayDisplay;
     public final ForgeConfigSpec.BooleanValue enableFoodShowsStackCount;
     public final ForgeConfigSpec.IntValue maxOunces;
+    public final ForgeConfigSpec.BooleanValue enableCuttingDecay;
+    public final ForgeConfigSpec.BooleanValue enableFoodWeightRender;
+    public final ForgeConfigSpec.BooleanValue enableFoodDecayRender;
 
     public DecayClientConfig(ForgeConfigSpec.Builder innerBuilder)
     {
@@ -21,6 +24,9 @@ public class DecayClientConfig
         enableTFCDecayDisplay = builder.apply("enableTFCDecayDisplay").comment("If false, automatically hide the 'rotten in X days' tooltip.").define("enableTFCDecayDisplay", false);
         enableFoodShowsStackCount = builder.apply("enableFoodShowsStackCount").comment("If true, food stack counts will render behind the weight bar").define("enableFoodShowsStackCount", false);
         maxOunces = builder.apply("maxOunces").comment("The value that should be displayed as the maximum ounces a food item could weigh. By default, a full stack is 160 ounces.").defineInRange("maxOunces", 16, 1, Integer.MAX_VALUE);
+        enableCuttingDecay = builder.apply("enableCuttingDecay").comment("Allow cutting decay off of food.").define("enableCuttingDecay", true);
+        enableFoodWeightRender = builder.apply("enableFoodWeightRender").comment("Enable rendering a food weight bar").define("enableFoodWeightRender", true);
+        enableFoodDecayRender = builder.apply("enableFoodDecayRender").comment("Enable rendering a food weight bar").define("enableFoodDecayRender", true);
 
         innerBuilder.pop();
     }
