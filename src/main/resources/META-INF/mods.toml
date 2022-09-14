@@ -1,0 +1,32 @@
+modLoader="javafml" #mandatory
+loaderVersion="[40,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+license="MIT"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+[[mods]] #mandatory
+# The modid of the mod
+modId="decay_2012" #mandatory
+version="${file.jarVersion}" #mandatory
+displayName="Decay 2012" #mandatory
+logoFile="decay_2012.png" #optional
+authors="EERussianguy" #optional
+description='''
+An addon for TFC.
+'''
+[[dependencies.decay_2012]] #optional
+    modId="tfc" #mandatory
+    mandatory=true #mandatory
+    versionRange="[0,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.decay_2012]] #optional
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[39,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.decay_2012]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.18.1,1.19)"
+    ordering="NONE"
+    side="BOTH"
