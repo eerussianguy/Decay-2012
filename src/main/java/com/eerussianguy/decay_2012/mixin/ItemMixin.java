@@ -1,5 +1,6 @@
 package com.eerussianguy.decay_2012.mixin;
 
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +38,8 @@ public class ItemMixin
                     if (newCount < count) // only if we will actually do something
                     {
                         food.setCreationDate(FoodCapability.getRoundedCreationDate()); // reset the creation date for the food
+
+                        Helpers.playSound(player.level, player.blockPosition(), SoundEvents.SHEEP_SHEAR);
 
                         other.hurtAndBreak(1, player, p -> {}); // damage knife
                         stack.setCount(newCount); // set the count to the shrunken amount

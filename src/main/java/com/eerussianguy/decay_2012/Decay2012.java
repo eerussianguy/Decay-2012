@@ -9,11 +9,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import com.eerussianguy.decay_2012.client.ClientForgeEvents;
+import com.eerussianguy.decay_2012.client.ClientModEvents;
 import net.dries007.tfc.common.capabilities.food.FoodCapability;
 import net.dries007.tfc.common.capabilities.food.FoodHandler;
 import net.dries007.tfc.common.capabilities.food.IFood;
-import net.dries007.tfc.config.FoodExpiryTooltipStyle;
-import net.dries007.tfc.config.TFCConfig;
 import net.dries007.tfc.util.calendar.Calendars;
 
 @Mod(Decay2012.MOD_ID)
@@ -28,10 +27,7 @@ public class Decay2012
         if (FMLEnvironment.dist == Dist.CLIENT)
         {
             ClientForgeEvents.init();
-            if (!DecayConfig.CLIENT.enableTFCDecayDisplay.get())
-            {
-                TFCConfig.CLIENT.foodExpiryTooltipStyle.set(FoodExpiryTooltipStyle.NONE); // evil laughter
-            }
+            ClientModEvents.init();
         }
     }
 
@@ -52,7 +48,7 @@ public class Decay2012
 
     public static int getWeightBarWidth(ItemStack stack)
     {
-        return Math.round(13f / stack.getMaxStackSize() * stack.getCount());
+        return Math.round(13f * stack.getCount() / stack.getMaxStackSize());
     }
 
     public static float getPercentDecayed(IFood food, boolean isClient)
