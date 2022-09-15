@@ -12,5 +12,5 @@
   "client": [
     "client.ItemRendererMixin"
   ],
-  "refmap": "firmalife.refmap.json"
+  "refmap": "decay_2012.refmap.json"
 }
