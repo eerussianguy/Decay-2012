@@ -26,7 +26,7 @@ public class ItemMixin
     private void inject$overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access, CallbackInfoReturnable<Boolean> cir)
     {
         Decay2012.ifFood(stack, food -> {
-            if (action == ClickAction.SECONDARY && slot.allowModification(player) && Helpers.isItem(other, TFCTags.Items.KNIVES) && DecayConfig.CLIENT.enableCuttingDecay.get())
+            if (action == ClickAction.SECONDARY && slot.allowModification(player) && Helpers.isItem(other, TFCTags.Items.KNIVES) && DecayConfig.SERVER.enableCuttingDecay.get())
             {
                 final boolean isClient = player.level.isClientSide;
                 final float pct = Decay2012.getPercentDecayed(food, isClient);

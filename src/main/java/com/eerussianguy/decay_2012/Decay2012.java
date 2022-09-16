@@ -56,7 +56,8 @@ public class Decay2012
         final long creation = food.getCreationDate();
         if (creation == FoodHandler.UNKNOWN_CREATION_DATE) return 0f;
         if (food.isRotten()) return 1f;
-        return (float) (Calendars.get(isClient).getTicks() - creation) / (food.getRottenDate() - creation);
+        final float actual = (float) (Calendars.get(isClient).getTicks() - creation) / (food.getRottenDate() - creation);
+        return actual * actual; // quadratic easing. replicates behavior of the first decay not passing as fast.
     }
 
     public static int getDecayBarColor(IFood food)
@@ -66,7 +67,17 @@ public class Decay2012
 
     public static int getDecayBarWidth(IFood food)
     {
-        return Math.round(13f * Math.max(0.1f, getPercentDecayed(food, true)));
+        final float pct = getPercentDecayed(food, true);
+        if (pct < 0.1f)
+        {
+            // if less than 0.1, decrease linearly from full to empty
+            return Math.round(13f * (0.1f - pct) * 10f);
+        }
+        else
+        {
+            // if more than 0.1, full bar again, but now red, and then decrease to nothing
+            return Math.round(13f * (1f - (pct / 0.9f)));
+        }
     }
 
     public static boolean isModifiable(IFood food)

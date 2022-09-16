@@ -28,7 +28,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
 
-version = '1.0.1'
+version = '1.0.2'
 group = 'com.eerussianguy.decay_2012' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'decay_2012'
 

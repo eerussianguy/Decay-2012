@@ -3,9 +3,7 @@ package com.eerussianguy.decay_2012.client;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.IceBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -34,10 +32,6 @@ public class ClientForgeEvents
             tooltip.add(Helpers.literal(format(currentOz) + " / " + format(max) + getWeightName()));
         });
 
-        if (DecayConfig.CLIENT.enableEuropeanMode.get() && item.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof IceBlock)
-        {
-            tooltip.add(Helpers.literal("European Mode Enabled. Do not attempt to add ice to any drinks!"));
-        }
     }
 
     private static String getWeightName()

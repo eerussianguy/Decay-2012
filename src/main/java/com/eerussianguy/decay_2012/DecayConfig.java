@@ -13,6 +13,7 @@ import net.dries007.tfc.util.Helpers;
 public class DecayConfig
 {
     public static final DecayClientConfig CLIENT = register(ModConfig.Type.CLIENT, DecayClientConfig::new);
+    public static final DecayServerConfig SERVER = register(ModConfig.Type.SERVER, DecayServerConfig::new);
 
     public static void init() {}
 
