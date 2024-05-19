@@ -7,10 +7,10 @@
     "defaultRequire": 1
   },
   "mixins": [
-    "ItemMixin"
+    "ClientConfigMixin",
   ],
   "client": [
-    "client.ItemRendererMixin"
+    "client.GuiGraphicsMixin"
   ],
   "refmap": "decay_2012.refmap.json"
 }
