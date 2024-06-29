@@ -49,12 +49,12 @@ public class Decay2012
 
     public static boolean isFood(ItemStack stack)
     {
-        return stack.getCapability(FoodCapability.CAPABILITY).map(food -> !food.isTransientNonDecaying()).orElse(false);
+        return stack.getCapability(FoodCapability.CAPABILITY).map(food -> !food.isTransientNonDecaying() || food instanceof FoodHandler.Dynamic).orElse(false);
     }
 
     public static void ifFood(ItemStack stack, Consumer<IFood> consumer)
     {
-        stack.getCapability(FoodCapability.CAPABILITY).filter(food -> !food.isTransientNonDecaying()).ifPresent(consumer);
+        stack.getCapability(FoodCapability.CAPABILITY).filter(food -> !food.isTransientNonDecaying() || food instanceof FoodHandler.Dynamic).ifPresent(consumer);
     }
 
     public static int getWeightBarWidth(ItemStack stack)
@@ -68,7 +68,7 @@ public class Decay2012
         if (creation == FoodHandler.UNKNOWN_CREATION_DATE) return 0f;
         if (food.isRotten()) return 1f;
         final float actual = (float) (Calendars.get(isClient).getTicks() - creation) / (food.getRottenDate() - creation);
-        return actual * actual; // quadratic easing. replicates behavior of the first decay not passing as fast.
+        return Mth.clamp(actual * actual, 0f, 1f); // quadratic easing. replicates behavior of the first decay not passing as fast.
     }
 
     public static int getDecayBarColor(IFood food)

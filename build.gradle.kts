@@ -12,7 +12,7 @@ val minecraftVersion: String = "1.20.1"
 // In future we probably want to track NeoForge versions, especially post-1.20 breaking change window
 val forgeVersion: String = "47.1.3"
 val mixinVersion: String = "0.8.5"
-val modVersion: String = "2.0.0"
+val modVersion: String = "2.0.1"
 val jeiVersion: String = "15.2.0.21"
 val patchouliVersion: String = "1.20.1-81-FORGE"
 val jadeVersion: String = "4614153"
