@@ -5,11 +5,11 @@ import com.eerussianguy.decay_2012.DecayConfig;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.IItemDecorator;
-import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.client.IItemDecorator;
+import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 
 public enum DecayBarDecorator implements IItemDecorator
 {
@@ -40,7 +40,7 @@ public enum DecayBarDecorator implements IItemDecorator
 
     public static void onItemDecorations(RegisterItemDecorationsEvent event)
     {
-        for (Item item : ForgeRegistries.ITEMS)
+        for (Item item : BuiltInRegistries.ITEM)
         {
             event.register(item, INSTANCE);
         }

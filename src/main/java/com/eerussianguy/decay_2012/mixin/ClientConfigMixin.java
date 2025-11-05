@@ -1,7 +1,7 @@
 package com.eerussianguy.decay_2012.mixin;
 
+import java.util.function.Supplier;
 import com.eerussianguy.decay_2012.DecayConfig;
-import net.minecraftforge.common.ForgeConfigSpec;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -20,7 +20,7 @@ public class ClientConfigMixin
     @Shadow(remap = false)
     @Mutable
     @Final
-    public ForgeConfigSpec.EnumValue<FoodExpiryTooltipStyle> foodExpiryTooltipStyle;
+    public Supplier<FoodExpiryTooltipStyle> foodExpiryTooltipStyle;
 
     @Inject(method = "<init>", at = @At("TAIL"), remap = false)
     private void inject$init(ConfigBuilder innerBuilder, CallbackInfo ci)

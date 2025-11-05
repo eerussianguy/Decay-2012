@@ -2,26 +2,30 @@ package com.eerussianguy.decay_2012;
 
 import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ItemStackedOnOtherEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import com.eerussianguy.decay_2012.client.ClientForgeEvents;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
 
 import net.dries007.tfc.common.TFCTags;
-import net.dries007.tfc.common.capabilities.food.FoodCapability;
-import net.dries007.tfc.common.capabilities.food.FoodHandler;
-import net.dries007.tfc.common.capabilities.food.IFood;
+import net.dries007.tfc.common.component.food.FoodCapability;
+import net.dries007.tfc.common.component.food.FoodComponent;
+import net.dries007.tfc.common.component.food.IFood;
 import net.dries007.tfc.util.Helpers;
 import net.dries007.tfc.util.calendar.Calendars;
 
@@ -30,31 +34,40 @@ public class Decay2012
 {
     public static final String MOD_ID = "decay_2012";
 
-    public Decay2012()
+    public Decay2012(ModContainer mod, IEventBus bus)
     {
-        DecayConfig.init();
-
+        final IEventBus frogBus = NeoForge.EVENT_BUS;
         if (FMLEnvironment.dist == Dist.CLIENT)
         {
-            ClientForgeEvents.init();
+            ClientForgeEvents.init(frogBus, bus);
         }
-        final IEventBus bus = MinecraftForge.EVENT_BUS;
-        bus.addListener(Decay2012::onItemStacked);
+        frogBus.addListener(Decay2012::onItemStacked);
+
+        mod.registerConfig(ModConfig.Type.CLIENT, DecayConfig.CLIENT_SPEC);
+        mod.registerConfig(ModConfig.Type.SERVER, DecayConfig.SERVER_SPEC);
     }
 
     public static ResourceLocation identifier(String path)
     {
-        return new ResourceLocation(Decay2012.MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(Decay2012.MOD_ID, path);
     }
 
     public static boolean isFood(ItemStack stack)
     {
-        return stack.getCapability(FoodCapability.CAPABILITY).map(food -> !food.isTransientNonDecaying() || food instanceof FoodHandler.Dynamic).orElse(false);
+        return isRenderable(FoodCapability.get(stack));
     }
 
     public static void ifFood(ItemStack stack, Consumer<IFood> consumer)
     {
-        stack.getCapability(FoodCapability.CAPABILITY).filter(food -> !food.isTransientNonDecaying() || food instanceof FoodHandler.Dynamic).ifPresent(consumer);
+        final IFood cap = FoodCapability.get(stack);
+        if (isRenderable(cap))
+            consumer.accept(cap);
+    }
+
+//        return stack.getCapability(FoodCapability.CAPABILITY).map(food -> !food.isTransientNonDecaying() || food instanceof FoodHandler.Dynamic).orElse(false);
+    private static boolean isRenderable(@Nullable IFood cap)
+    {
+        return cap != null && cap.getCreationDate() != FoodComponent.TRANSIENT_NEVER_DECAY_FLAG;
     }
 
     public static int getWeightBarWidth(ItemStack stack)
@@ -65,10 +78,15 @@ public class Decay2012
     public static float getPercentDecayed(IFood food, boolean isClient)
     {
         final long creation = food.getCreationDate();
-        if (creation == FoodHandler.UNKNOWN_CREATION_DATE) return 0f;
+        if (isNonDecaying(creation)) return 0f;
         if (food.isRotten()) return 1f;
-        final float actual = (float) (Calendars.get(isClient).getTicks() - creation) / (food.getRottenDate() - creation);
+        final float actual = Math.max(Calendars.get(isClient).getTicks() - creation, 0f) / (food.getRottenDate() - creation);
         return Mth.clamp(actual * actual, 0f, 1f); // quadratic easing. replicates behavior of the first decay not passing as fast.
+    }
+
+    private static boolean isNonDecaying(long creation)
+    {
+        return creation == FoodComponent.TRANSIENT_NEVER_DECAY_FLAG || creation == FoodComponent.INVISIBLE_NEVER_DECAY_FLAG || creation == FoodComponent.NEVER_DECAY_FLAG;
     }
 
     public static int getDecayBarColor(IFood food)
@@ -93,28 +111,29 @@ public class Decay2012
 
     public static boolean isModifiable(IFood food)
     {
-        return food.getCreationDate() != FoodHandler.UNKNOWN_CREATION_DATE && food.getRottenDate() != FoodHandler.ROTTEN_DATE && food.getRottenDate() != FoodHandler.NEVER_DECAY_DATE && !food.isTransientNonDecaying();
+        return !isNonDecaying(food.getCreationDate()) && !food.isRotten();
     }
 
     public static void onItemStacked(ItemStackedOnOtherEvent event)
     {
-        final ItemStack other = event.getStackedOnItem();
-        final ItemStack stack = event.getCarriedItem();
+        final ItemStack stack = event.getStackedOnItem();
+        final ItemStack other = event.getCarriedItem();
         final ClickAction action = event.getClickAction();
         final Slot slot = event.getSlot();
         final Player player = event.getPlayer();
 
         Decay2012.ifFood(stack, food -> {
-            if (action == ClickAction.SECONDARY && slot.allowModification(player) && Helpers.isItem(other, TFCTags.Items.KNIVES) && DecayConfig.SERVER.enableCuttingDecay.get())
+            if (action == ClickAction.SECONDARY && slot.allowModification(player) && Helpers.isItem(other, TFCTags.Items.TOOLS_KNIFE) && DecayConfig.SERVER.enableCuttingDecay.get())
             {
                 final int newCount = getCountAfterCutting(stack, food, player.level().isClientSide);
                 if (newCount != -1)
                 {
-                    food.setCreationDate(FoodCapability.getRoundedCreationDate()); // reset the creation date for the food
+                    FoodCapability.setCreationDate(stack, FoodCapability.getRoundedCreationDate());
 
                     Helpers.playSound(player.level(), player.blockPosition(), SoundEvents.SHEEP_SHEAR);
 
-                    other.hurtAndBreak(1, player, p -> {}); // damage knife
+                    if (player.level() instanceof ServerLevel server)
+                        other.hurtAndBreak(1, server, player, p -> {}); // damage knife
                     stack.setCount(newCount); // set the count to the shrunken amount
                     event.setCanceled(true);
                 }

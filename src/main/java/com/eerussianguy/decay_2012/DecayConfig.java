@@ -1,26 +1,23 @@
 package com.eerussianguy.decay_2012;
 
-import java.util.function.Function;
-
-import org.apache.commons.lang3.tuple.Pair;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import com.eerussianguy.decay_2012.client.DecayClientConfig;
-import net.dries007.tfc.util.Helpers;
 
 public class DecayConfig
 {
-    public static final DecayClientConfig CLIENT = register(ModConfig.Type.CLIENT, DecayClientConfig::new);
-    public static final DecayServerConfig SERVER = register(ModConfig.Type.SERVER, DecayServerConfig::new);
+    public static final DecayClientConfig CLIENT;
+    public static final ModConfigSpec CLIENT_SPEC;
+    public static final DecayServerConfig SERVER;
+    public static final ModConfigSpec SERVER_SPEC;
 
-    public static void init() {}
-
-    private static <C> C register(ModConfig.Type type, Function<ForgeConfigSpec.Builder, C> factory)
+    static
     {
-        Pair<C, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(factory);
-        if (!Helpers.BOOTSTRAP_ENVIRONMENT) ModLoadingContext.get().registerConfig(type, specPair.getRight());
-        return specPair.getLeft();
+        final var client = new ModConfigSpec.Builder().configure(DecayClientConfig::new);
+        CLIENT = client.getLeft();
+        CLIENT_SPEC = client.getRight();
+        final var server = new ModConfigSpec.Builder().configure(DecayServerConfig::new);
+        SERVER = server.getLeft();
+        SERVER_SPEC = server.getRight();
     }
 }

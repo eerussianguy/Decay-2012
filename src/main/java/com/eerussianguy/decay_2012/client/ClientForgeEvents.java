@@ -5,24 +5,20 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 
 import com.eerussianguy.decay_2012.Decay2012;
 import com.eerussianguy.decay_2012.DecayConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import net.dries007.tfc.client.ClientHelpers;
 
 public class ClientForgeEvents
 {
-    public static void init()
+    public static void init(IEventBus forgeBus, IEventBus modBus)
     {
-        final IEventBus bus = MinecraftForge.EVENT_BUS;
-
-        bus.addListener(ClientForgeEvents::onTooltip);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(DecayBarDecorator::onItemDecorations);
+        forgeBus.addListener(ClientForgeEvents::onTooltip);
+        modBus.addListener(DecayBarDecorator::onItemDecorations);
     }
 
     private static void onTooltip(ItemTooltipEvent event)
